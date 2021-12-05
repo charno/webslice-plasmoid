@@ -25,6 +25,8 @@ Item {
     property alias cfg_backgroundColorTheme: backgroundColorTheme.checked
     property alias cfg_backgroundColorCustom: backgroundColorCustom.checked
     property alias cfg_customBackgroundColor: customBackgroundColor.color
+    property alias cfg_setBarWidth: setBarWidth.checked
+    property alias cfg_barWidth: barWidth.value
     
     property double maxWidth: width - 22
 
@@ -127,28 +129,64 @@ Item {
             Label {
                 text: i18n('Plasmoid behaviour :')
                 Layout.columnSpan: 3
+		font.bold: true
             }
 
             ButtonGroup {
-                buttons: behaviourGroup.children
-            }
-
-            ColumnLayout {
                 id: behaviourGroup
+            }
 
-                RadioButton {
-                    id: displaySiteBehaviour
-                    text: i18n("Display the site")
+
+            RadioButton {
+                id: displaySiteBehaviour
+                text: i18n("Display the site")
+                ButtonGroup.group: behaviourGroup
+            }
+            
+            // Settings for taskbar view
+            GridLayout{
+                Layout.fillWidth: true
+                enabled: displaySiteBehaviour.checked
+                Layout.columnSpan: 3
+                Layout.leftMargin: units.gridUnit
+                columns: 5
+                
+                CheckBox {
+                    id: setBarWidth
+                    text: i18nc('General setting, checkbox, to set a fixed width of the plasmoid in the taskbar', 'Fixed taskbar width')
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 2
+                }
+                
+                Label{
+                    text: i18n('Width')
+                    Layout.columnSpan: 1
+                    enabled: setBarWidth.checked
                 }
 
-                RadioButton {
-                    id: buttonBehaviour
-                    text: i18n("Display a button that opens the site in a new panel")
+                SpinBox {
+                    id: barWidth
+                    from: 10
+                    to: 10000
+                    stepSize: 10
+                    textFromValue: function(value, locale) {
+                        return i18nc('Abbreviation for pixels', '%1 px', value);
+                    }
+                    Layout.columnSpan: 1
+                    enabled: setBarWidth.checked
                 }
             }
 
-            // Minimal UI settings
+            RadioButton {
+                id: buttonBehaviour
+                text: i18n("Display a button that opens the site in a new panel")
+                ButtonGroup.group: behaviourGroup
+            }
+            
+
+            // Settings for Panel view
             GridLayout{
+                Layout.leftMargin: units.gridUnit
                 Layout.fillWidth: true
                 enabled: buttonBehaviour.checked
                 Layout.columnSpan: 3

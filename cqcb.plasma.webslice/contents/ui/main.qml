@@ -75,6 +75,9 @@ Item {
     property bool fillWidthAndHeight: plasmoid.configuration.fillWidthAndHeight
     property bool notOffTheRecord: plasmoid.configuration.notOffTheRecord
     property string profileName: plasmoid.configuration.profileName
+    
+    property bool setBarWidth: plasmoid.configuration.setBarWidth
+    property int barWidth: plasmoid.configuration.barWidth
 
     signal handleSettingsUpdated();
 
@@ -121,10 +124,11 @@ Item {
 
         backgroundColor: backgroundColorWhite?"white":(backgroundColorTransparent?"transparent":(backgroundColorTheme?theme.viewBackgroundColor:(backgroundColorCustom?customBackgroundColor:"black")))
 
-        width: (displaySiteBehaviour) ? 0 : webPopupWidth
+        width: (displaySiteBehaviour) ? (setBarWidth ? barWidth : 0) : webPopupWidth
         height: (displaySiteBehaviour) ? 0 : webPopupHeight
         Layout.fillWidth: fillWidthAndHeight
         Layout.fillHeight: fillWidthAndHeight
+	Layout.preferredWidth: setBarWidth ? barWidth : -1
 
         zoomFactor: zoomFactorCfg
         
@@ -222,6 +226,15 @@ Item {
                 webviewID.reload();
                 //console.debug("inside" + webviewID.height + " " + webPopupHeight + " " + plasmoid.configuration.webPopupHeight + " " +displaySiteBehaviour);
             }
+            else if(setBarWidth){
+                webviewID.width = barWidth;
+                webviewID.Layout.preferredWidth =  barWidth
+            }
+            else{
+                webviewID.Layout.preferredWidth =  -1
+            }
+                
+                
         }
 
         /**
